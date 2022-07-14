@@ -11,8 +11,15 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
-    public GameObject GameOverText;
+    public Text BestScoreText;
+    public InputField InputName;
+    public Button Button;
+
     
+    public GameObject inputPlace;
+    public GameObject GameOverText;
+
+    public string player_name;
     private bool m_Started = false;
     private int m_Points;
     
@@ -22,6 +29,10 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        BestScoreText.text = "Best Score :" + PlayerPrefs.GetString("BestScoreNickname", InputName.text) + ":" + PlayerPrefs.GetInt("BestScoreValue", m_Points); 
+
+
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -40,6 +51,7 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
+        
         if (!m_Started)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -57,7 +69,11 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+
+                InputBestScore();
+                DontDestroyOnLoad(BestScoreText);
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+               
             }
         }
     }
@@ -72,5 +88,22 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        inputPlace.SetActive(true);
+        SetPlayerName();
+
+    }
+    public void SetPlayerName()
+    {
+        PlayerPrefs.SetString("BestScoreNickname", InputName.text);
+        PlayerPrefs.SetInt("BestScoreValue", m_Points);
+        PlayerPrefs.Save();
+    }
+    public void InputBestScore()
+    {
+        PlayerPrefs.GetString("BestScoreNickname", InputName.text);
+        string name = InputName.text;
+        PlayerPrefs.GetInt("BestScoreValue", m_Points);
+        string score = m_Points.ToString();
+        BestScoreText.text = "Best Score :" + name + ":" + score;
     }
 }
